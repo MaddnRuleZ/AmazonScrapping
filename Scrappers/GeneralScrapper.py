@@ -18,6 +18,7 @@ class GeneralScrapper:
             "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--start-maximized")
 
         try:
             self.driver = webdriver.Chrome(options=chrome_options)
@@ -42,29 +43,4 @@ class GeneralScrapper:
         except Exception as e:
             print("Error occurred while initializing the driver:", e)
 
-    '''def load_cookies(self):
-        try:
-            # Load cookies from file
-            with open('cookies.pkl', 'rb') as cookies_file:
-                cookies = pickle.load(cookies_file)
-                for cookie in cookies:
-                    # Check if the cookie domain matches the current domain
-                    if 'domain' in cookie and self.url.endswith(cookie['domain']):
-                        self.driver.add_cookie(cookie)
-                    else:
-                        print("Skipping cookie with invalid domain:", cookie)
-        except FileNotFoundError:
-            print("No saved cookies found.")
-
-    def save_cookies(self):
-        try:
-            # Save cookies to file
-            with open('cookies.pkl', 'wb') as cookies_file:
-                pickle.dump(self.driver.get_cookies(), cookies_file)
-        except Exception as e:
-            print("Error occurred while saving cookies:", e)
-
-    def quit_driver(self):
-        self.save_cookies()  # Save cookies before quitting the driver
-        self.driver.quit()'''
 

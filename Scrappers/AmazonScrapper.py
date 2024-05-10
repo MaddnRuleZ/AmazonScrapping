@@ -1,5 +1,6 @@
 import time
 
+from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -8,18 +9,37 @@ from selenium.webdriver.support.wait import WebDriverWait
 from Scrappers.GeneralScrapper import GeneralScrapper
 from misc import FileSystem
 
+'''
+Open Todos
+2nd Level ISIN Number obtaining
 
+
+4x Main Curl (Goto Main, set Index != 0)
+100x Sec Lvl Curl
+
+Safety Net
+'''
 class AmazonScrapper(GeneralScrapper):
 
     def __init__(self, url):
         print("Amazon Scrapper initialized")
         super().__init__(url)
+        self.root_url = "https://sellercentral.amazon.de"
 
+
+    def scrape_isin(self):
+        for i in range(1, 4):
+            self.click_select_cols()
+            self.input_text_into_element(i)
+            self.curl_current()
 
     def select_categories(self):
         input("RDY")
+        # get input stats for all elements -> make own Class?
 
+        # get asins
 
+        # iterate over all asins
 
     def get_monthly(self, asin, year, month, country_id):
         month_string = ""
@@ -69,88 +89,64 @@ class AmazonScrapper(GeneralScrapper):
         self.driver.get(url)
 
     def click_select_cols(self):
-        time.sleep(2)
+        time.sleep(2) # rm, call after body loaded
         self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-link")
         time.sleep(1)
-
-        # firste ELEM
-        # element_to_scroll_to = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[6]/div/kat-checkbox//div[1]")
-
         p_3 = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]")
-        self.driver.execute_script("argument[0].scrollBy(0, 250);", p_3)
 
-        p_3.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[4]/div[1]").click()
-        p_3.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[4]/div[2]").click()
-        p_3.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[1]").click()
-        p_3.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[2]").click()
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[4]/div[1]").click()
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[4]/div[2]").click()
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[1]").click()
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[2]").click()
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[6]/div[1]").click()
 
+        # last ELEM
+        element_to_scroll_to = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[6]")
+        self.driver.execute_script("arguments[0].scrollIntoView();", element_to_scroll_to)
 
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[6]/div[4]/div[1]").click()
 
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[6]/div[4]/div[2]").click()
 
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[6]/div[5]/div[1]").click()
 
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[6]/div[5]/div[2]").click()
 
-        '''p_3.find_element(By.XPATH,
-                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[2]").send_keys(Keys.END)
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[6]/div[6]/div[1]").click()
 
-        scroll_elem = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]")
-        self.driver.execute_script("arguments[0].scrollTo(0, arguments[0].scrollHeight)", scroll_elem)'''
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[4]/div[1]").click()
 
-        '''
-        p_3.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[4]/div[1]").click()
-        p_3.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[4]/div[2]").click()
-        p_3.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[1]").click()
-        p_3.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[2]").click()
-        '''
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[4]/div[2]").click()
 
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[5]/div[1]").click()
 
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[5]/div[2]").click()
 
-        input("XXX")
+        p_3.find_element(By.XPATH,
+                         "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[6]/div[1]").click()
 
-        parent = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div")
-        checkbox_elements = parent.find_elements(By.CSS_SELECTOR, "[part='checkbox-check']")
-
-        for checkbox in checkbox_elements:
-            # Get the label attribute
-            label = checkbox.get_attribute("label")
-            if label == "Preis (Median)":
-                checkbox.click()
-
-            print("Label:", label)
-
-        '''
-        self.driver.find_element(By.XPATH, "//div[@aria-label='Preis (Median)']").click()
-
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[4]/div[2]/kat-checkbox//div[1]")
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[1]/kat-checkbox//div[1]")
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[5]/div[5]/div[2]/kat-checkbox//div[1]")
-
-        # scroll low
-        time.sleep(2)
-        scroll_element = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal//div/div/div[2]")
-        self.driver.execute_script("arguments[0].scrollTo(0, arguments[0].scrollHeight)", scroll_element)
-
-        # select rest
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[4]/div[1]/kat-checkbox//div[1]")
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[5]/div[1]/kat-checkbox//div[1]")
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[6]/div[1]/kat-checkbox//div[1]")
-        time.sleep(2)
-
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[4]/div[2]/kat-checkbox//div[1]")
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[5]/div[2]/kat-checkbox//div[1]")
-        time.sleep(2)
-
-        # press finnish
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[3]/div/kat-button[2]//button/div[2]/slot/span")
-        time.sleep(2)
-        input("done?")
-        '''
+        # click footer button
+        footer = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[3]")
+        footer.find_elements(By.XPATH, ".//*")[2].click()
 
     def curl_current(self):
         results = []
         WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(
             (By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[3]/div/div[1]/div/div[2]")))
-
-        input("CHECK COLUMBS")
 
         # Once the element is present, find it
         root_elem = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[3]/div/div[1]/div/div[2]")
@@ -216,37 +212,41 @@ class AmazonScrapper(GeneralScrapper):
                                    buy_send_speed_1, buy_send_speed_2)
 
                 results.append(src)
-                csv_string = src.to_csv_string()
-                print(csv_string)
-                FileSystem.append_string_to_file("dox/csv_final.csv", csv_string)
             except Exception as e:
                 print("ERROR")
-
         self.get_adjacent_asins(results)
-
-
 
     def get_adjacent_asins(self, results):
         for res in results:
-            self.driver.get(res.href)
-            time.sleep(2)
-            print("X")
+            asins = []
+            self.driver.get(self.root_url + res.href)
+            try:
+                asin_cols = WebDriverWait(self.driver, 5).until(
+                    EC.visibility_of_all_elements_located((By.CLASS_NAME, "css-p1ypz0"))
+                )
+                for x in range(0, len(asin_cols), 2):  # Iterate over every second element
+                    asins.append(asin_cols[x].text)
+                print(asins)
+                res.add_asin(asins)
+                csv_string = res.to_csv_string()
+                FileSystem.append_string_to_file("dox/csv_final.csv", csv_string)
 
-            asin_cols = self.driver.find_elements(By.CLASS_NAME, "css-p1ypz0")
-            for asin in asin_cols:
-                print(asin.text)
-
-    def set_to_100(self):
-        print("Set to 100")
-        self.scroll_to_bottom()
-        input("COMBO")
-        self.click_element()
-
-        input("AWAIT")
+            except TimeoutException:
+                print("Elements not visible, reloading the page...")
+                self.driver.refresh()  # Reload the page
+                # Wait for the elements again
+                asin_cols = WebDriverWait(self.driver, 5).until(
+                    EC.visibility_of_all_elements_located((By.CLASS_NAME, "css-p1ypz0"))
+                )
+                for x in range(0, len(asin_cols), 2):  # Iterate over every second element
+                    asins.append(asin_cols[x].text)
+                print(asins)
+                res.add_asin(asins)
+                csv_string = res.to_csv_string()
+                FileSystem.append_string_to_file("dox/csv_final.csv", csv_string)
 
     def click_element(self):
         try:
-
             other_elem = self.driver.find_element(By.ID, "query-performance-asin-report-table-page-size-selector")
             other_elem.click()
             time.sleep(1)
@@ -278,14 +278,27 @@ class AmazonScrapper(GeneralScrapper):
         except Exception as e:
             print(f"Error: {e}")
 
-
-
     def find_x_click(self, xpath):
         try:
             button = self.driver.find_element(By.XPATH, xpath)
             button.click()
         except:
             print("Couldn t Find")
+
+    def input_text_into_element(self, index):
+        if index == 1:
+            return
+
+        elif index == 2:
+            elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-footer > div > kat-pagination").shadowRoot.querySelector("nav > ul > li:nth-child(2)")')
+            elem.click()
+        elif index == 3:
+            elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-footer > div > kat-pagination").shadowRoot.querySelector("nav > ul > li:nth-child(3)")')
+            elem.click()
+        elif index == 3:
+            elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-footer > div > kat-pagination").shadowRoot.querySelector("nav > ul > li:nth-child(4)")')
+            elem.click()
+
 
 
 class SearchResult:
@@ -330,7 +343,7 @@ class SearchResult:
         self.buy_send_speed_0 = buy_send_speed_0
         self.buy_send_speed_1 = buy_send_speed_1
         self.buy_send_speed_2 = buy_send_speed_2
-        self.adjacent_asins = None
+        self.asins = None
 
 
     def to_csv_string(self):
@@ -343,7 +356,7 @@ class SearchResult:
                f"{self.cart_asin_price_median}#{self.cart_send_speed_0}#{self.cart_send_speed_1}#" \
                f"{self.cart_send_speed_2}#{self.buy_general}#{self.buy_ratio}#{self.buy_asin_ammount}#" \
                f"{self.buy_asin_share}#{self.buy_price_median}#{self.buy_asin_price_median}#" \
-               f"{self.buy_send_speed_0}#{self.buy_send_speed_1}#{self.buy_send_speed_2}#{self.href}"
+               f"{self.buy_send_speed_0}#{self.buy_send_speed_1}#{self.buy_send_speed_2}#{self.href} {self.asins}"
 
-    def add_asin(self, index, asin):
-        print("X")
+    def add_asin(self, asins):
+        self.asins = '#'.join(asins)
