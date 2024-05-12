@@ -9,29 +9,19 @@ from selenium.webdriver.support.wait import WebDriverWait
 from Scrappers.GeneralScrapper import GeneralScrapper
 from misc import FileSystem
 
-'''
-Open Todos
-2nd Level ISIN Number obtaining
 
-
-4x Main Curl (Goto Main, set Index != 0)
-100x Sec Lvl Curl
-
-Safety Net
-'''
 class AmazonScrapper(GeneralScrapper):
 
     def __init__(self, url):
+        self.isin_url = url
         print("Amazon Scrapper initialized")
         super().__init__(url)
         self.root_url = "https://sellercentral.amazon.de"
 
-
     def scrape_isin(self):
-        for i in range(1, 4):
-            self.click_select_cols()
-            self.input_text_into_element(i)
-            self.curl_current()
+        self.click_select_cols()
+        self.select_top_100()
+        self.curl_current()
 
     def select_categories(self):
         input("RDY")
@@ -213,7 +203,7 @@ class AmazonScrapper(GeneralScrapper):
 
                 results.append(src)
             except Exception as e:
-                print("ERROR")
+                print("ERROR", e)
         self.get_adjacent_asins(results)
 
     def get_adjacent_asins(self, results):
@@ -285,11 +275,14 @@ class AmazonScrapper(GeneralScrapper):
         except:
             print("Couldn t Find")
 
-    def input_text_into_element(self, index):
+    def select_page(self, index):
         if index == 1:
             return
+        self.driver.get(self.isin_url)
+        input("CHECK")
+        time.sleep(10)
 
-        elif index == 2:
+        if index == 2:
             elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-footer > div > kat-pagination").shadowRoot.querySelector("nav > ul > li:nth-child(2)")')
             elem.click()
         elif index == 3:
@@ -299,7 +292,13 @@ class AmazonScrapper(GeneralScrapper):
             elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-footer > div > kat-pagination").shadowRoot.querySelector("nav > ul > li:nth-child(4)")')
             elem.click()
 
-
+    def select_top_100(self):
+        input("XX")
+        elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-page-size-selector").shadowRoot.querySelector("#katal-id-218")')
+        elem.click()
+        time.sleep(1)
+        elem_2 = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-page-size-selector").shadowRoot.querySelector("div > div:nth-child(3) > div > div > div > slot:nth-child(2) > kat-option:nth-child(4) > div > div.standard-option-name")')
+        elem_2.click()
 
 class SearchResult:
     def __init__(self, name, href, val_id, volume_general, impressions_general, impressions_asin_ammount,
