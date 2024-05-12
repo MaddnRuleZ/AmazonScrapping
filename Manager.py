@@ -27,9 +27,14 @@ class Manager:
         year = input("Enter Year: \n")
         self.year = year
 
-        # todo print list of available countrys
-        country_id = input("Enter Country ID \n")
-        self.country_id = country_id
+        # default = de
+        self.country_id = "de"
+        print("Countries:")
+        print("Deutschland: [de], USA:[us], Britt:[gb] Niederlande:[nl], Italien: [it], Spanien:[es], Schweden: [se]; Default = de")
+        country_input = input("Enter Country ID \n")
+        if country_input != "":
+            self.country_id = country_input
+
         self.month = input("Enter Month Number (1-12) \n")
 
         input("ASINS in Document?, press Enter to Continue \n")

@@ -230,8 +230,9 @@ class AmazonScrapper(GeneralScrapper):
 
 
     def select_top_100(self):
-        elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-page-size-selector").shadowRoot.querySelector("#katal-id-218")')
-        if not elem:
+        try:
+            elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-page-size-selector").shadowRoot.querySelector("#katal-id-218")')
+        except:
             print("NO VALUES PRESENT FOR THIS ASIN")
             return
 
