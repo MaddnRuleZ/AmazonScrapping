@@ -52,15 +52,21 @@ class Manager:
             ama = AmazonScrapper(asin_url)
             ama.scrape_isin()
 
-
     def select_quater(self):
         asin_urls = []
         year = input("Enter Year: \n")
         self.year = year
 
-        # todo print list of available countrys
-        country_id = input("Enter Country ID \n")
-        self.country_id = country_id
+        # default = de
+        self.country_id = "de"
+        print("Countries:")
+        print("Deutschland: [de], USA:[us], Britt:[gb] Niederlande:[nl], Italien: [it], Spanien:[es], Schweden: [se]; Default = de")
+        country_input = input("Enter Country ID \n")
+        if country_input != "":
+            self.country_id = country_input
+
+        self.month = input("Enter Month Number (1-12) \n")
+
         input("ASINS in Document?, press Enter to Continue \n")
 
         for asin in self.asins:
@@ -107,8 +113,6 @@ class Manager:
         url = "https://sellercentral.amazon.de/brand-analytics/dashboard/query-performance?view-id=query-performance-asin-view&asin=" \
               + asin + "&reporting-range=monthly&monthly-year=" + self.year + "&" + self.year + "-month=" + self.year + month_string + "&country-id=" + self.country_id
         return url
-
-
 
     def get_quartal(self, asin):
         quater_string = ""
