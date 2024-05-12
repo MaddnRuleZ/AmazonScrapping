@@ -9,78 +9,29 @@ from selenium.webdriver.support.wait import WebDriverWait
 from Scrappers.GeneralScrapper import GeneralScrapper
 from misc import FileSystem
 
-
 class AmazonScrapper(GeneralScrapper):
 
     def __init__(self, url):
+        self.root_url = "https://sellercentral.amazon.de"
         self.isin_url = url
         print("Amazon Scrapper initialized")
         super().__init__(url)
-        self.root_url = "https://sellercentral.amazon.de"
+        self.set_window_size()
 
     def scrape_isin(self):
         self.click_select_cols()
         self.select_top_100()
         self.curl_current()
 
-    def select_categories(self):
-        input("RDY")
-        # get input stats for all elements -> make own Class?
+        time.sleep(3)
+        self.driver.quit()
 
-        # get asins
-
-        # iterate over all asins
-
-    def get_monthly(self, asin, year, month, country_id):
-        month_string = ""
-        if month == 1:
-            month_string = "-01-31"
-        elif month == 2:
-            month_string = "-02-28"
-        elif month == 3:
-            month_string = "-03-31"
-        elif month == 4:
-            month_string = "-04-30"
-        elif month == 5:
-            month_string = "-05-31"
-        elif month == 6:
-            month_string = "-06-30"
-        elif month == 7:
-            month_string = "-07-31"
-        elif month == 8:
-            month_string = "-08-31"
-        elif month == 9:
-            month_string = "-09-30"
-        elif month == 10:
-            month_string = "-10-31"
-        elif month == 11:
-            month_string = "-11-30"
-        elif month == 12:
-            month_string = "-12-31"
-
-        url = "https://sellercentral.amazon.de/brand-analytics/dashboard/query-performance?view-id=query-performance-asin-view&asin=" \
-              + asin + "&reporting-range=monthly&monthly-year=" + year + "&" + year + "-month=" + year + month_string + "&country-id=" + country_id
-        print("Curling URL "  + url)
-        self.driver.get(url)
-
-    def get_quartal(self, asin, year, quater_id, country_id):
-        quater_string = ""
-        if quater_id == 1:
-            quater_string = "-03-31"
-        elif quater_id == 2:
-            quater_string = "-06-30"
-        elif quater_id == 3:
-            quater_string = "-09-30"
-        elif quater_id == 4:
-            quater_string = "-12-31"
-        url = "https://sellercentral.amazon.de/brand-analytics/dashboard/query-performance?view-id=query-performance-asin-view&asin=" \
-              + asin + "&reporting-range=quarterly&quarterly-year=" + year + "&" + year + "-quarter=" + year + quater_string + "&country-id=" + country_id
-        print("Curling URL "  + url)
-        self.driver.get(url)
 
     def click_select_cols(self):
         time.sleep(2) # rm, call after body loaded
-        self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-link")
+        if not self.find_x_click("/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-link"):
+            return
+
         time.sleep(1)
         p_3 = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]")
 
@@ -144,7 +95,7 @@ class AmazonScrapper(GeneralScrapper):
         if not lines:
             print("No Results")
             return None
-
+        print("Scanning Top 100")
         for line in lines:
             try:
                 columbs = line.find_elements(By.CLASS_NAME, "css-10urxj0")
@@ -272,29 +223,18 @@ class AmazonScrapper(GeneralScrapper):
         try:
             button = self.driver.find_element(By.XPATH, xpath)
             button.click()
+            return True
         except:
             print("Couldn t Find")
+            return False
 
-    def select_page(self, index):
-        if index == 1:
-            return
-        self.driver.get(self.isin_url)
-        input("CHECK")
-        time.sleep(10)
-
-        if index == 2:
-            elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-footer > div > kat-pagination").shadowRoot.querySelector("nav > ul > li:nth-child(2)")')
-            elem.click()
-        elif index == 3:
-            elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-footer > div > kat-pagination").shadowRoot.querySelector("nav > ul > li:nth-child(3)")')
-            elem.click()
-        elif index == 3:
-            elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-footer > div > kat-pagination").shadowRoot.querySelector("nav > ul > li:nth-child(4)")')
-            elem.click()
 
     def select_top_100(self):
-        input("XX")
         elem = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-page-size-selector").shadowRoot.querySelector("#katal-id-218")')
+        if not elem:
+            print("NO VALUES PRESENT FOR THIS ASIN")
+            return
+
         elem.click()
         time.sleep(1)
         elem_2 = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-page-size-selector").shadowRoot.querySelector("div > div:nth-child(3) > div > div > div > slot:nth-child(2) > kat-option:nth-child(4) > div > div.standard-option-name")')

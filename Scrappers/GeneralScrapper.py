@@ -12,6 +12,10 @@ class GeneralScrapper:
         self.url = url
         # HEADLESS OPTION
         chrome_options = Options()
+
+        # todo EINSTELLUNG FÜR BROWSER SICHTBAR
+        # chrome_options.add_argument("--headless")
+
         chrome_options.add_argument("user-data-dir=C:/Users/xmadd/Desktop/ChromeSeleniumStorage")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument(
@@ -42,5 +46,17 @@ class GeneralScrapper:
                 raise
         except Exception as e:
             print("Error occurred while initializing the driver:", e)
+
+    def set_window_size(self):
+        min_width = 1920
+        min_height = 1080
+
+        # Get current window size
+        current_width = self.driver.execute_script("return window.innerWidth")
+        current_height = self.driver.execute_script("return window.innerHeight")
+
+        # Check if current size is smaller than minimum size and resize if necessary
+        if current_width < min_width or current_height < min_height:
+            self.driver.set_window_size(max(current_width, min_width), max(current_height, min_height))
 
 

@@ -1,3 +1,4 @@
+from Scrappers.AmazonScrapper import AmazonScrapper
 from misc import FileSystem
 
 
@@ -16,7 +17,7 @@ class Manager:
         print("[0] Montly")
         print("[1] Quaterly")
         quater_moth_index = input("Enter Number: \n")
-        if quater_moth_index == 0:
+        if quater_moth_index == "0":
             self.select_month()
         else:
             self.select_quater()
@@ -27,12 +28,22 @@ class Manager:
         self.year = year
 
         # todo print list of available countrys
-        country_id = input("Enter Country ID")
+        country_id = input("Enter Country ID \n")
         self.country_id = country_id
-        input("ASINS in Document?, press Enter to Continue")
+        self.month = input("Enter Month Number (1-12) \n")
 
-        for asin in self.asins:
-            asin_urls.append(self.get_monthly(asin))
+        input("ASINS in Document?, press Enter to Continue \n")
+        self.get_asin_list()
+
+        for asin_url in self.asins:
+            asin_urls.append(self.get_monthly(asin_url))
+
+        print("Loaded all ASIN LINKS, Ammount:" + str(len(asin_urls)))
+
+        for asin_url in asin_urls:
+            ama = AmazonScrapper(asin_url)
+            ama.scrape_isin()
+
 
     def select_quater(self):
         asin_urls = []
@@ -40,22 +51,26 @@ class Manager:
         self.year = year
 
         # todo print list of available countrys
-        country_id = input("Enter Country ID")
+        country_id = input("Enter Country ID \n")
         self.country_id = country_id
-        input("ASINS in Document?, press Enter to Continue")
+        input("ASINS in Document?, press Enter to Continue \n")
 
         for asin in self.asins:
             asin_urls.append(self.get_quartal(asin))
 
+        print("Loaded all ASIN LINKS, Ammount:" + str(len(asin_urls)))
 
+        for asin_url in asin_urls:
+            ama = AmazonScrapper(asin_url)
+            ama.scrape_isin()
 
     def get_asin_list(self):
-        return FileSystem.read_text_file("dox/input_asins.txt")
-
+        self.asins = FileSystem.read_text_file("dox/input_asins.txt")
 
     def get_monthly(self, asin):
+
         month_string = ""
-        month = self.month
+        month = int(self.month)
         if month == 1:
             month_string = "-01-31"
         elif month == 2:
