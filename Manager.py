@@ -13,14 +13,17 @@ class Manager:
 
 
     def start_program(self):
-        print("Select")
-        print("[0] Montly")
-        print("[1] Quaterly")
-        quater_moth_index = input("Enter Number: \n")
-        if quater_moth_index == "0":
-            self.select_month()
-        else:
-            self.select_quater()
+        try:
+            print("Select")
+            print("[0] Montly")
+            print("[1] Quaterly")
+            quater_moth_index = input("Enter Number: \n")
+            if quater_moth_index == "0":
+                self.select_month()
+            else:
+                self.select_quater()
+        except:
+            print("Failed Program Startup, restart Program")
 
     def select_month(self):
         asin_urls =[]
