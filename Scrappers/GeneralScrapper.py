@@ -14,7 +14,7 @@ class GeneralScrapper:
         chrome_options = Options()
 
         # todo EINSTELLUNG FÜR BROWSER SICHTBAR
-        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless")
 
         chrome_options.add_argument("user-data-dir=C:/Users/xmadd/Desktop/ChromeSeleniumStorage")
         chrome_options.add_argument("--no-sandbox")
