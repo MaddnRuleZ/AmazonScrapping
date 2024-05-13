@@ -25,6 +25,9 @@ class GeneralScrapper:
         chrome_options.add_argument("--start-maximized")
 
 
+
+
+
         try:
             self.driver = webdriver.Chrome(options=chrome_options)
             self.driver.set_window_size(1800, 900)
