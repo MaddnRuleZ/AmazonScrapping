@@ -20,7 +20,7 @@ class AmazonScrapper(GeneralScrapper):
         self.set_window_size()
 
     def scrape_isin(self):
-        FileSystem.append_string_to_file("dox/Results/Ergebnisse.csv", "")
+        FileSystem.append_string_to_file("dox/Results/Ergebnisse.csv", "# ENTER COLUMNS HERE")
         self.click_select_cols()
         self.select_top_100()
         self.curl_current()
