@@ -1,7 +1,6 @@
 from Scrappers.AmazonScrapper import AmazonScrapper
 from misc import FileSystem
 
-
 class Manager:
 
     def __init__(self):
@@ -10,7 +9,6 @@ class Manager:
         self.month = None
         self.country_id = None
         self.quater_id = None
-
 
     def start_program(self):
         try:
@@ -26,7 +24,7 @@ class Manager:
             print("Failed Program Startup, restart Program")
 
     def select_month(self):
-        asin_urls =[]
+        asin_urls = []
         year = input("Enter Year: \n")
         self.year = year
 
@@ -44,12 +42,12 @@ class Manager:
         self.get_asin_list()
 
         for asin_url in self.asins:
-            asin_urls.append(self.get_monthly(asin_url))
+            asin_urls.append(self.get_monthly(asin_url.strip()))
 
         print("Loaded all ASIN LINKS, Ammount:" + str(len(asin_urls)))
 
-        for asin_url in asin_urls:
-            ama = AmazonScrapper(asin_url)
+        for indx, asin_url in enumerate(asin_urls):
+            ama = AmazonScrapper(asin_url, self.asins[indx])
             ama.scrape_isin()
 
     def select_quater(self):
@@ -74,8 +72,8 @@ class Manager:
 
         print("Loaded all ASIN LINKS, Ammount:" + str(len(asin_urls)))
 
-        for asin_url in asin_urls:
-            ama = AmazonScrapper(asin_url)
+        for indx, asin_url in enumerate(asin_urls):
+            ama = AmazonScrapper(asin_url, self.asins[indx])
             ama.scrape_isin()
 
     def get_asin_list(self):

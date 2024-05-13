@@ -11,21 +11,22 @@ from misc import FileSystem
 
 class AmazonScrapper(GeneralScrapper):
 
-    def __init__(self, url):
+    def __init__(self, url, root_asin_number):
         self.root_url = "https://sellercentral.amazon.de"
         self.isin_url = url
+        self.root_asin_number = root_asin_number
         print("Amazon Scrapper initialized")
         super().__init__(url)
         self.set_window_size()
 
     def scrape_isin(self):
+        FileSystem.append_string_to_file("dox/Results/Ergebnisse.csv", "")
         self.click_select_cols()
         self.select_top_100()
         self.curl_current()
 
         time.sleep(3)
         self.driver.quit()
-
 
     def click_select_cols(self):
         time.sleep(2) # rm, call after body loaded
@@ -80,6 +81,7 @@ class AmazonScrapper(GeneralScrapper):
         p_3.find_element(By.XPATH,
                          "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[6]/div[1]").click()
 
+
         # click footer button
         footer = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[3]")
         footer.find_elements(By.XPATH, ".//*")[2].click()
@@ -95,6 +97,7 @@ class AmazonScrapper(GeneralScrapper):
         if not lines:
             print("No Results")
             return None
+
         print("Scanning Top 100")
         for line in lines:
             try:
@@ -170,7 +173,7 @@ class AmazonScrapper(GeneralScrapper):
                 print(asins)
                 res.add_asin(asins)
                 csv_string = res.to_csv_string()
-                FileSystem.append_string_to_file("dox/csv_final.csv", csv_string)
+                FileSystem.append_string_to_file("dox/Results/Ergebnisse.csv", csv_string)
 
             except TimeoutException:
                 print("Elements not visible, reloading the page...")
@@ -184,7 +187,7 @@ class AmazonScrapper(GeneralScrapper):
                 print(asins)
                 res.add_asin(asins)
                 csv_string = res.to_csv_string()
-                FileSystem.append_string_to_file("dox/csv_final.csv", csv_string)
+                FileSystem.append_string_to_file("dox/Results/Ergebnisse.csv", csv_string)
 
     def click_element(self):
         try:
@@ -249,6 +252,7 @@ class SearchResult:
                  cart_asin_price_median, cart_send_speed_0, cart_send_speed_1, cart_send_speed_2, buy_general,
                  buy_ratio, buy_asin_ammount, buy_asin_share, buy_price_median, buy_asin_price_median,
                  buy_send_speed_0, buy_send_speed_1, buy_send_speed_2):
+
         self.name = name
         self.href = href
         self.val_id = val_id
