@@ -1,13 +1,12 @@
 import time
-
 from selenium.common import TimeoutException
 from selenium.webdriver import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-
 from Scrappers.GeneralScrapper import GeneralScrapper
 from misc import FileSystem
+
 
 class AmazonScrapper(GeneralScrapper):
 
@@ -21,6 +20,7 @@ class AmazonScrapper(GeneralScrapper):
 
     def scrape_isin(self):
         FileSystem.append_string_to_file("dox/Results/Ergebnisse.csv", "# ENTER COLUMNS HERE")
+
         self.click_select_cols()
         self.select_top_100()
         self.curl_current()
@@ -80,7 +80,6 @@ class AmazonScrapper(GeneralScrapper):
 
         p_3.find_element(By.XPATH,
                          "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[2]/div/div[7]/div[6]/div[1]").click()
-
 
         # click footer button
         footer = self.driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/div/kat-tabs/kat-tab[2]/div[2]/div/kat-modal/div[3]")
