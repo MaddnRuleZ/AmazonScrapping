@@ -10,17 +10,16 @@ from misc import FileSystem
 
 class AmazonScrapper(GeneralScrapper):
 
+    # todo cpy
     def __init__(self, url, root_asin_number):
         self.root_url = "https://sellercentral.amazon.de"
         self.isin_url = url
         self.root_asin_number = root_asin_number
         print("Amazon Scrapper initialized")
         super().__init__(url)
-        self.set_window_size()
 
+    # todo cpy
     def scrape_isin(self):
-        FileSystem.append_string_to_file("dox/Results/Ergebnisse.csv", "# ENTER COLUMNS HERE")
-
         self.click_select_cols()
         self.select_top_100()
         self.curl_current()
@@ -145,7 +144,9 @@ class AmazonScrapper(GeneralScrapper):
                 buy_send_speed_1 = delivery_1s[2].text
                 buy_send_speed_2 = delivery_2s[2].text
 
-                src = SearchResult(name, href, val_id, volume_general, impressions_general, impressions_asin_ammount,
+
+                # todo changed here
+                src = SearchResult(self.root_asin_number, name, href, val_id, volume_general, impressions_general, impressions_asin_ammount,
                                    impressions_asin_share, clicks_general, clicks_click_rate, clicks_asin_ammount,
                                    clicks_asin_share, click_price_median, click_asin_price_median, click_send_speed_0,
                                    click_send_speed_1, click_send_speed_2, cart_general, cart_add, cart_asin_ammount,
@@ -244,14 +245,16 @@ class AmazonScrapper(GeneralScrapper):
         elem_2.click()
 
 class SearchResult:
-    def __init__(self, name, href, val_id, volume_general, impressions_general, impressions_asin_ammount,
+
+    # todo changed here
+    def __init__(self, asin, name, href, val_id, volume_general, impressions_general, impressions_asin_ammount,
                  impressions_asin_share, clicks_general, clicks_click_rate, clicks_asin_ammount, clicks_asin_share,
                  click_price_median, click_asin_price_median, click_send_speed_0, click_send_speed_1,
                  click_send_speed_2, cart_general, cart_add, cart_asin_ammount, cart_asin_share, cart_price_median,
                  cart_asin_price_median, cart_send_speed_0, cart_send_speed_1, cart_send_speed_2, buy_general,
                  buy_ratio, buy_asin_ammount, buy_asin_share, buy_price_median, buy_asin_price_median,
                  buy_send_speed_0, buy_send_speed_1, buy_send_speed_2):
-
+        self.asin = asin
         self.name = name
         self.href = href
         self.val_id = val_id
@@ -288,9 +291,9 @@ class SearchResult:
         self.buy_send_speed_2 = buy_send_speed_2
         self.asins = None
 
-
+    # todo changed here
     def to_csv_string(self):
-        return f"{self.name}#{self.val_id}#{self.volume_general}#{self.impressions_general}#" \
+        return f"{self.asin}#{self.name}#{self.val_id}#{self.volume_general}#{self.impressions_general}#" \
                f"{self.impressions_asin_ammount}#{self.impressions_asin_share}#{self.clicks_general}#" \
                f"{self.clicks_click_rate}#{self.clicks_asin_ammount}#{self.clicks_asin_share}#" \
                f"{self.click_price_median}#{self.click_asin_price_median}#{self.click_send_speed_0}#" \

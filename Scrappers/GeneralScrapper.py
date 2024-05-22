@@ -1,4 +1,6 @@
 import pickle
+import time
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -8,48 +10,71 @@ from selenium.webdriver.support import expected_conditions as EC
 class GeneralScrapper:
 
     def __init__(self, url):
-        print("Innit Driver")
+        print(url)
         self.url = url
+
+
+    # todo changed AUCTUNG MIT PFAD; MAYBE CHANGE ZU NEUER DIR UM KEINE ÜBERLAPPUNG ZU HABEN
+    def start_browser_instance(self):
+        print("Innit Driver")
         # HEADLESS OPTION
         chrome_options = Options()
 
         # todo EINSTELLUNG FÜR BROWSER SICHTBAR
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
 
         chrome_options.add_argument("user-data-dir=C:/Users/xmadd/Desktop/ChromeSeleniumStorage")
+
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument(
             "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_argument("--window-size=1920,1080")
+        import platform
+        from selenium import webdriver
+        import time
+
+        chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--start-maximized")
 
-
-
-
+        # Überprüfen, ob das Betriebssystem Ubuntu ist
+        if platform.system() == "Linux" and "Ubuntu" in platform.version():
+            # Pfad zu Chrome unter Ubuntu
+            chrome_options.binary_location = "/usr/bin/google-chrome"
+        else:
+            # Pfad zu Chrome unter Windows
+            chrome_options.binary_location = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 
         try:
             self.driver = webdriver.Chrome(options=chrome_options)
+            time.sleep(2)
             self.driver.set_window_size(1800, 900)
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
-            # Set page load timeout value in seconds
             page_load_timeout = 30
-            # Set script timeout value in seconds
             script_timeout = 30
 
             # Set page load timeout and script timeout
             self.driver.set_page_load_timeout(page_load_timeout)
             self.driver.set_script_timeout(script_timeout)
             try:
-                self.driver.get(url)
+                self.driver.get(self.url)
                 WebDriverWait(self.driver, page_load_timeout).until(
                     EC.presence_of_element_located((By.TAG_NAME, "body")))
+                self.set_window_size()
+                time.sleep(10)
+                return True
+
             except Exception as e:
                 print("Error occurred while loading the page: QUITTING DRIVER", e)
                 self.driver.quit()
-                raise
+                return False
+
         except Exception as e:
             print("Error occurred while initializing the driver:", e)
+            self.driver.quit()
+            return False
 
     def set_window_size(self):
         min_width = 1920

@@ -1,3 +1,6 @@
+import time
+from datetime import datetime
+
 from Scrappers.AmazonScrapper import AmazonScrapper
 from misc import FileSystem
 
@@ -10,8 +13,18 @@ class Manager:
         self.country_id = None
         self.quater_id = None
 
+    # todo cpy
     def start_program(self):
+        FileSystem.clear_file("dox/RESULTS/" + self.get_current_date() + ".csv")
+        FileSystem.append_string_to_file("dox/RESULTS/" + self.get_current_date() + ".csv", self.get_categories())
         try:
+            change_account = input("Account ändern? Tippe: y\n")
+            if change_account == "y":
+                ama = AmazonScrapper("https://sellercentral.amazon.de", None)
+                ama.start_browser_instance()
+                input("Änderungen gemacht ?, PRESS Enter, dann neustarten")
+                return
+
             print("Select")
             print("[0] Montly")
             print("[1] Quaterly")
@@ -20,8 +33,8 @@ class Manager:
                 self.select_month()
             else:
                 self.select_quater()
-        except:
-            print("Failed Program Startup, restart Program")
+        except Exception as e:
+            print("Failed Program Startup, restart Program", e)
 
     def select_month(self):
         asin_urls = []
@@ -47,8 +60,17 @@ class Manager:
         print("Loaded all ASIN LINKS, Ammount:" + str(len(asin_urls)))
 
         for indx, asin_url in enumerate(asin_urls):
-            ama = AmazonScrapper(asin_url, self.asins[indx])
-            ama.scrape_isin()
+            try:
+                ama = AmazonScrapper(asin_url, self.asins[indx])
+
+                while not ama.start_browser_instance():
+                    print("Retrying Starting the Instance")
+                    time.sleep(10)
+
+                ama.scrape_isin()
+            except:
+                print("Failed Iteration: " + str(indx))
+
 
     def select_quater(self):
         asin_urls = []
@@ -72,10 +94,20 @@ class Manager:
 
         print("Loaded all ASIN LINKS, Ammount:" + str(len(asin_urls)))
 
-        for indx, asin_url in enumerate(asin_urls):
-            ama = AmazonScrapper(asin_url, self.asins[indx])
-            ama.scrape_isin()
 
+        for indx, asin_url in enumerate(asin_urls):
+            try:
+                ama = AmazonScrapper(asin_url, self.asins[indx])
+
+                while not ama.start_browser_instance():
+                    print("Retrying Starting the Instance")
+                    time.sleep(10)
+
+                ama.scrape_isin()
+            except:
+                print("Failed Iteration: " + str(indx))
+
+                
     def get_asin_list(self):
         self.asins = FileSystem.read_text_file("dox/input_asins.txt")
 
@@ -127,3 +159,16 @@ class Manager:
               + asin + "&reporting-range=quarterly&quarterly-year=" + self.year + "&" + self.year + "-quarter=" + self.year + quater_string + "&country-id=" + self.country_id
         return url
 
+
+
+    # todo cpy below
+    def get_current_date(self):
+        current_date_time = datetime.now()
+        current_date = current_date_time.strftime("%Y-%m-%d")
+        return current_date
+
+    def get_categories(self):
+        return "Parent ASIN#Suchanfrage#Ergebnis Suchanfrage#Volumen Suchanfrage#Eindrücke Gesamtanzahl#Eindrücke ASIN Anzahl#Eindrücke ASIN Anteil#" \
+               "Klicks Gesamtanzahl# Klicks Rate# Klick ASIN Anzahl# Klicks ASIN Anteil# Klicks Preis (Median)#ASIN Preis (Median)#Versand gleicher Tag# Versand 1 Tag# Versand 2 Tage" \
+               "Einkaufswagen Gesamtanzahl# Einkaufswagen hinzufügen%# ASIN Anzahl# ASIN Anzeil# Preis Median# ASIN Preis (Median)#Versand gleicher Tag# Versand 1 Tag# Versand 2 Tage" \
+               "Käufe Gesamtanzahl# Kauftarif%# ASIN Anzahl# ASIN Anzeil# Preis Median# ASIN Preis (Median)#Versand gleicher Tag# Versand 1 Tag# Versand 2 Tage"

@@ -65,3 +65,14 @@ def remove_duplicates(input_list):
             result_list.append(item)
 
     return result_list
+
+def clear_file(file_path):
+    try:
+        # Open the file in write mode, which clears existing content
+        with open(file_path, 'w') as file:
+            pass  # Pass to ensure the file gets cleared without writing anything
+        print("File cleared successfully.")
+    except FileNotFoundError:
+        print("File not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
