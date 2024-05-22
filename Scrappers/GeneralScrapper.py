@@ -7,6 +7,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+import platform
+from selenium import webdriver
+import time
+
 class GeneralScrapper:
 
     def __init__(self, url):
@@ -22,28 +26,16 @@ class GeneralScrapper:
 
         # todo EINSTELLUNG FÜR BROWSER SICHTBAR
         # chrome_options.add_argument("--headless")
-
-        chrome_options.add_argument("user-data-dir=C:/Users/xmadd/Desktop/ChromeSeleniumStorage")
+        # chrome_options.add_argument("user-data-dir=C:/Users/xmadd/Desktop/ChromeSeleniumStorage")
 
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument(
             "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_argument("--window-size=1920,1080")
-        import platform
-        from selenium import webdriver
-        import time
-
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--start-maximized")
-
-        # Überprüfen, ob das Betriebssystem Ubuntu ist
-        if platform.system() == "Linux" and "Ubuntu" in platform.version():
-            # Pfad zu Chrome unter Ubuntu
-            chrome_options.binary_location = "/usr/bin/google-chrome"
-        else:
-            # Pfad zu Chrome unter Windows
-            chrome_options.binary_location = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+        chrome_options.binary_location = "/usr/bin/google-chrome"
 
         try:
             self.driver = webdriver.Chrome(options=chrome_options)
