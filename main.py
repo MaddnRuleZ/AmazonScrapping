@@ -8,4 +8,4 @@ def test_scrapper():
 
 if __name__ == '__main__':
     man = Manager()
-    man.start_program()
+    # man.start_program()

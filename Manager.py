@@ -2,6 +2,7 @@ import time
 from datetime import datetime
 
 from Scrappers.AmazonScrapper import AmazonScrapper
+from Scrappers.GeneralScrapper import GeneralScrapper
 from misc import FileSystem
 
 class Manager:
@@ -12,6 +13,14 @@ class Manager:
         self.month = None
         self.country_id = None
         self.quater_id = None
+
+        # Overwritten
+        gen = GeneralScrapper("https://www.google.com/")
+        gen.start_browser_instance()
+
+        return
+
+
 
     # todo cpy
     def start_program(self):
