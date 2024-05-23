@@ -17,7 +17,6 @@ class Manager:
         # Overwritten
         gen = GeneralScrapper("https://www.google.com/")
         gen.start_browser_instance()
-
         return
 
 
