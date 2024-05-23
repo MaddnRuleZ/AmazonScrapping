@@ -17,8 +17,6 @@ class GeneralScrapper:
         print(url)
         self.url = url
 
-
-    # todo changed AUCTUNG MIT PFAD; MAYBE CHANGE ZU NEUER DIR UM KEINE ÜBERLAPPUNG ZU HABEN
     def start_browser_instance(self):
         print("Innit Driver")
         # HEADLESS OPTION
@@ -26,11 +24,9 @@ class GeneralScrapper:
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('--remote-debugging-port=9515')  #
+        chrome_options.add_argument('--remote-debugging-port=9515')
         chrome_options.add_argument('--disable-gpu')
-
         # chrome_options.add_argument("user-data-dir=C:/Users/xmadd/Desktop/ChromeSeleniumStorage")
-        chrome_options.binary_location = "/usr/local/bin/chromedriver"
 
 
         '''chrome_options.add_argument("--no-sandbox")
