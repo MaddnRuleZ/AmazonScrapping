@@ -50,6 +50,7 @@ class GeneralScrapper:
             self.driver.set_script_timeout(script_timeout)
             try:
                 self.driver.get(self.url)
+                print("Load Success")
                 WebDriverWait(self.driver, page_load_timeout).until(
                     EC.presence_of_element_located((By.TAG_NAME, "body")))
                 self.set_window_size()
