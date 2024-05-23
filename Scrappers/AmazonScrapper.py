@@ -10,15 +10,19 @@ from misc import FileSystem
 
 class AmazonScrapper(GeneralScrapper):
 
-    # todo cpy
     def __init__(self, url, root_asin_number):
         self.root_url = "https://sellercentral.amazon.de"
         self.isin_url = url
         self.root_asin_number = root_asin_number
         print("Amazon Scrapper initialized")
         super().__init__(url)
+        self.start_browser_instance()
 
-    # todo cpy
+        input("WAITING INIT")
+        self.check_otp_neccecary()
+        input("WAITING INIT 2")
+
+
     def scrape_isin(self):
         self.click_select_cols()
         self.select_top_100()
@@ -145,7 +149,6 @@ class AmazonScrapper(GeneralScrapper):
                 buy_send_speed_2 = delivery_2s[2].text
 
 
-                # todo changed here
                 src = SearchResult(self.root_asin_number, name, href, val_id, volume_general, impressions_general, impressions_asin_ammount,
                                    impressions_asin_share, clicks_general, clicks_click_rate, clicks_asin_ammount,
                                    clicks_asin_share, click_price_median, click_asin_price_median, click_send_speed_0,
@@ -244,9 +247,132 @@ class AmazonScrapper(GeneralScrapper):
         elem_2 = self.driver.execute_script('return document.querySelector("#query-performance-asin-report-table-page-size-selector").shadowRoot.querySelector("div > div:nth-child(3) > div > div > div > slot:nth-child(2) > kat-option:nth-child(4) > div > div.standard-option-name")')
         elem_2.click()
 
+    # LOGIN AND OTP PART
+
+    def check_otp_neccecary(self):
+        print("Checking RE- LOGIN Requirement")
+        time.sleep(2)
+        if not self.enter_email_address("jan.goelling@gmail.com"):
+            print("NO RE- LOGIN")
+            return
+
+        time.sleep(2)
+        self.enter_password("clickbot123")
+        time.sleep(2)
+        self.click_checkbox()
+        time.sleep(2)
+        self.click_sign_in_button()
+        time.sleep(2)
+        self.opt_click_remember_device_checkbox()
+        time.sleep(2)
+        otp_token = input("ENTER OPT CODE HERE: \n")
+        self.enter_text_into_otp_field(otp_token)
+        time.sleep(2)
+        self.click_sign_in_final_button()
+        time.sleep(2)
+
+    def click_sign_in_final_button(self):
+        try:
+            # Wait for the Sign In button element to be located
+            sign_in_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.ID, 'auth-signin-button'))
+            )
+
+            # Once located, click the button
+            sign_in_button.click()
+            print("Sign In button clicked successfully.")
+        except Exception as e:
+            print("Error:", e)
+
+
+    def enter_email_address(self, text):
+        try:
+            # Wait for the element to be located
+            element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="ap_email"]'))
+            )
+
+            # Once located, clear any existing text and enter the new text
+            element.clear()
+            element.send_keys(text)
+            print("Text entered successfully.")
+
+            return True
+        except Exception as e:
+            return False
+
+    def enter_password(self, text):
+        try:
+            # Wait for the element to be located
+            element = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="ap_password"]'))
+            )
+
+            # Once located, clear any existing text and enter the new text
+            element.clear()
+            element.send_keys(text)
+            print("Password entered successfully.")
+        except Exception as e:
+            print("Error:", e)
+
+    def click_checkbox(self):
+        try:
+            # Wait for the checkbox element to be located
+            checkbox = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//input[@type="checkbox" and @name="rememberMe"]'))
+            )
+
+            # Once located, click the checkbox
+            checkbox.click()
+            print("Checkbox clicked successfully.")
+        except Exception as e:
+            print("Error:", e)
+
+    def click_sign_in_button(self):
+        try:
+            # Wait for the button element to be located
+            button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="signInSubmit"]'))
+            )
+
+            # Once located, click the button
+            button.click()
+            print("Sign In button clicked successfully.")
+        except Exception as e:
+            print("Error:", e)
+
+    def opt_click_remember_device_checkbox(self):
+        try:
+            # Wait for the checkbox element to be located
+            checkbox = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//input[@id="auth-mfa-remember-device"]'))
+            )
+
+            # Once located, click the checkbox
+            checkbox.click()
+            print("Remember device checkbox clicked successfully.")
+        except Exception as e:
+            print("Error:", e)
+
+    def enter_text_into_otp_field(self, text):
+        try:
+            # Wait for the OTP input field element to be located
+            otp_field = WebDriverWait(self.driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//input[@id="auth-mfa-otpcode"]'))
+            )
+
+            # Once located, clear any existing text and enter the new text
+            otp_field.clear()
+            otp_field.send_keys(text)
+            print("Text entered into OTP field successfully.")
+        except Exception as e:
+            print("Error:", e)
+
+
+
+
 class SearchResult:
 
-    # todo changed here
     def __init__(self, asin, name, href, val_id, volume_general, impressions_general, impressions_asin_ammount,
                  impressions_asin_share, clicks_general, clicks_click_rate, clicks_asin_ammount, clicks_asin_share,
                  click_price_median, click_asin_price_median, click_send_speed_0, click_send_speed_1,
@@ -291,7 +417,6 @@ class SearchResult:
         self.buy_send_speed_2 = buy_send_speed_2
         self.asins = None
 
-    # todo changed here
     def to_csv_string(self):
         return f"{self.asin}#{self.name}#{self.val_id}#{self.volume_general}#{self.impressions_general}#" \
                f"{self.impressions_asin_ammount}#{self.impressions_asin_share}#{self.clicks_general}#" \
