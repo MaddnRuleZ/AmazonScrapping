@@ -41,8 +41,6 @@ class GeneralScrapper:
             self.driver = webdriver.Chrome(options=chrome_options)
             time.sleep(2)
             self.driver.set_window_size(1800, 900)
-        except Exception as e:
-            print(f"An error occurred: {e}")
 
             page_load_timeout = 30
             script_timeout = 30
