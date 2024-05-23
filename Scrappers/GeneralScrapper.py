@@ -35,7 +35,7 @@ class GeneralScrapper:
         chrome_options.add_argument("--window-size=1920,1080")
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--start-maximized")
-        # chrome_options.binary_location = "/usr/bin/chromedriver"
+        chrome_options.binary_location = "/usr/local/bin/chromedriver"
 
         try:
             self.driver = webdriver.Chrome(options=chrome_options)
