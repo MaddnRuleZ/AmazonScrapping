@@ -27,7 +27,7 @@ class GeneralScrapper:
         chrome_options.add_argument('--disable-dev-shm-usage')
         chrome_options.add_argument('--remote-debugging-port=9515')
         chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument("user-data-dir=C:/Users/xmadd/Desktop/ChromeSeleniumStorage2")
+        chrome_options.add_argument("user-data-dir=/root/Scrapper/ChromeProfile")
         chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_argument("--window-size=1920,1080")
